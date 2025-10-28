@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}خانه — سامانه رأی‌گیری{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;">
+        <div>
+            <div class="h-main">سامانهٔ مدیریت انتخابات مدرسه</div>
+            <div class="muted" style="margin-top:6px;">
+                این سامانه به منظور ثبت، مدیریت و نظارت بر فرآیند رأی‌گیری دانش‌آموزان طراحی شده است.  
+                <br>
+                مدرسهٔ استاد بهزاد تحت مدیریت <strong>محمد قاسم زمانی</strong>
+            </div>
+
+            <div style="margin-top:14px; font-style:italic; color:#555;">
+                رأی تو صدای توست، چراغیست روشن در تاریکی،  
+                هر انتخاب، گامیست برای فردایی بهتر،  
+                امروز تصمیم بگیر، فردا را بساز.
+            </div>
+
+            <div style="margin-top:14px;">
+                <a class="btn btn-primary" href="{{ url_for('select_class') }}">شروع رأی‌گیری</a>
+                <a class="btn btn-ghost" href="{{ url_for('admin_panel') }}">پنل مدیریت</a>
+            </div>
+        </div>
+        <div style="min-width:220px; text-align:left;">
+            <div style="background:linear-gradient(90deg,var(--accent),#0aa0e6); color:white; padding:12px; border-radius:10px; font-weight:800;">
+                مدرسهٔ استاد بهزاد
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

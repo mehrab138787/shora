@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}پنل مدیریت{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+            <div class="h-main">پنل مدیریت</div>
+            <div class="muted">مدیریت کاندیدها، مشاهده نتایج و افزودن دانش‌آموز</div>
+        </div>
+        <div>
+            <a class="btn btn-primary" href="{{ url_for('add_candidate') }}">➕ افزودن کاندید</a>
+            <a class="btn btn-secondary" href="{{ url_for('print_results') }}" target="_blank">🖨️ مشاهده و پرینت نتایج</a>
+            <form method="POST" action="{{ url_for('reset_votes') }}" style="display:inline;">
+                <button class="btn btn-ghost" type="submit" onclick="return confirm('آیا مطمئن هستید که می‌خواهید همهٔ آرای ذخیره‌شده را پاک کنید؟')">بازنشانی آرا</button>
+            </form>
+        </div>
+    </div>
+
+    <div style="margin-top:14px;">
+        <div style="display:flex; gap:14px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:240px;">
+                <div class="muted">کاندیدها</div>
+                <div style="margin-top:10px;" class="list">
+                    {% if candidates %}
+                        {% for c in candidates %}
+                            <div class="row" style="display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div class="name">{{ c[1] }}</div>
+                                    <div class="meta" style="margin-top:4px;">ID: {{ c[0] }}</div>
+                                </div>
+                                <div>
+                                    <form method="POST" action="{{ url_for('delete_candidate', candidate_id=c[0]) }}" style="display:inline;">
+                                        <button class="btn btn-danger" type="submit" onclick="return confirm('آیا مطمئن هستید که می‌خواهید این کاندید و آرای مرتبط با آن را حذف کنید؟')">❌ حذف</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="muted">هیچ کاندیدی وجود ندارد.</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div style="width:320px;">
+                <div class="muted">وضعیت کلی</div>
+                <div style="margin-top:12px; padding:12px; border-radius:10px; background:#fbfdff; border:1px solid #eef2f5;">
+                    <div style="font-weight:800; font-size:22px; color:var(--accent)">{{ voted_students }}</div>
+                    <div class="muted">از {{ total_students }} دانش‌آموز رأی داده‌اند</div>
+                </div>
+
+                <div style="margin-top:12px;">
+                    <div class="muted">نتیجهٔ فعلی</div>
+                    <div style="margin-top:8px;" class="list">
+                        {% if results %}
+                            {% for r in results %}
+                                <div class="row">
+                                    <div>
+                                        <div class="name">{{ r[1] }}</div>
+                                        <div class="muted" style="margin-top:6px;">آرا: {{ r[2] }}</div>
+                                    </div>
+                                    <div class="meta">{% if loop.index==1 %}🥇{% elif loop.index==2 %}🥈{% elif loop.index==3 %}🥉{% else %}—{% endif %}</div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="muted">هنوز رأیی ثبت نشده است.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top:14px;">
+            <div class="muted">برای افزودن دانش‌آموز به یک کلاس، ابتدا به صفحهٔ «کلاس‌ها» بروید و سپس «افزودن دانش‌آموز» را بزنید.</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

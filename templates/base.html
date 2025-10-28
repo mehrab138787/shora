@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{% block title %}سامانه رأی‌گیری{% endblock %}</title>
+
+    <style>
+        /* فونت و تنظیمات پایه */
+        @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v34.1.0/dist/font-face.css');
+
+        :root{
+            --bg:#f6f7f9;          /* پس‌زمینه کلی */
+            --card:#30343a;        /* کارت‌ها (خاکستری تیره) */
+            --card-2:#2b2e33;
+            --muted:#9aa0a6;
+            --accent:#1fb6c7;      /* هایلایت فیروزه‌ای */
+            --white:#ffffff;
+            --glass: rgba(255,255,255,0.06);
+        }
+
+        *{box-sizing:border-box}
+        body{
+            margin:0;
+            font-family: Vazirmatn, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: linear-gradient(180deg,var(--bg), #e9ebee 140px);
+            color:#111827;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+            direction: rtl;
+        }
+
+        header.appbar{
+            width:100%;
+            background: var(--white);
+            padding:18px 20px;
+            box-shadow: 0 6px 18px rgba(16,24,40,0.06);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            position:sticky;
+            top:0;
+            z-index:30;
+        }
+        .brand{
+            display:flex;
+            gap:14px;
+            align-items:center;
+        }
+        .logo {
+            width:48px;
+            height:48px;
+            border-radius:10px;
+            background: linear-gradient(135deg, var(--accent), #0766a6);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:var(--white);
+            font-weight:700;
+            box-shadow: 0 8px 20px rgba(31,182,199,0.18);
+            font-size:18px;
+        }
+        .brand h1{margin:0;font-size:18px}
+        .brand p{margin:0;color:var(--muted);font-size:13px}
+
+        .nav-actions a{
+            text-decoration:none;
+            color:var(--white);
+            background:linear-gradient(90deg,var(--accent),#0aa0e6);
+            padding:10px 14px;
+            border-radius:10px;
+            font-weight:600;
+            box-shadow: 0 6px 18px rgba(10,160,230,0.12);
+            transition:transform .18s ease, box-shadow .18s ease;
+            margin-left:8px;
+        }
+        .nav-actions a:hover{ transform: translateY(-3px); }
+
+        .wrap{
+            width:95%;
+            max-width:1050px;
+            margin:28px auto;
+            display:grid;
+            grid-template-columns: 1fr;
+            gap:18px;
+        }
+
+        /* card */
+        .card{
+            background: var(--white);
+            border-radius:14px;
+            padding:18px;
+            box-shadow: 0 10px 30px rgba(16,24,40,0.06);
+        }
+
+        /* headline */
+        .h-main { font-size:20px; margin:0 0 8px 0; }
+        .muted { color:var(--muted); font-size:13px; margin-bottom:10px; }
+
+        /* grid for class cards */
+        .grid-cards{
+            display:grid;
+            grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
+            gap:14px;
+        }
+        .class-card{
+            background: linear-gradient(180deg, #fff, #fbfcfd);
+            border-radius:12px;
+            padding:12px;
+            text-align:center;
+            border:1px solid #eef2f5;
+            transition: transform .18s ease, box-shadow .18s ease;
+            cursor:pointer;
+        }
+        .class-card:hover{ transform: translateY(-6px); box-shadow: 0 18px 40px rgba(16,24,40,0.08); }
+        .class-code { font-size:18px; font-weight:700; color:#111827; }
+        .class-meta { color:var(--muted); font-size:13px; margin-top:6px; }
+
+        /* buttons */
+        .btn {
+            display:inline-block;
+            padding:10px 14px;
+            border-radius:10px;
+            text-decoration:none;
+            font-weight:700;
+            cursor:pointer;
+            border:none;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg,var(--accent),#0aa0e6);
+            color:var(--white);
+            box-shadow: 0 8px 30px rgba(10,160,230,0.12);
+        }
+        .btn-ghost {
+            background:transparent;
+            color:#1f2937;
+            border:1px solid #e6e9ed;
+        }
+
+        /* form */
+        form .field { margin-bottom:12px; }
+        input[type="text"], select {
+            width:100%; padding:12px 14px; border-radius:10px; border:1px solid #e6e9ed;
+            font-size:15px; outline:none;
+            transition: box-shadow .12s ease, border-color .12s ease;
+        }
+        input[type="text"]:focus { box-shadow: 0 6px 18px rgba(31,182,199,0.06); border-color: var(--accent); }
+
+        /* list */
+        .list { display:flex; flex-direction:column; gap:8px; }
+        .list .row {
+            display:flex; justify-content:space-between; align-items:center;
+            padding:10px 12px; border-radius:10px; background:#fbfdff; border:1px solid #eef2f5;
+        }
+        .list .row .name { font-weight:700; color:#0f1724; }
+        .list .row .meta { color:var(--muted); font-size:13px; }
+
+        /* candidate card */
+        .candidate {
+            border-radius:10px; padding:12px; background: linear-gradient(180deg,#ffffff,#f9fbfc);
+            border:1px solid #eef2f5; display:flex; align-items:center; justify-content:space-between;
+            transition: transform .12s ease;
+        }
+        .candidate:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(16,24,40,0.06); }
+
+        /* messages */
+        .flash {
+            padding:10px 14px; border-radius:10px; margin-bottom:12px; font-weight:700;
+        }
+        .flash.success { background:linear-gradient(90deg,#1dd1a1,#10b981); color:white; }
+        .flash.error { background:linear-gradient(90deg,#f97373,#ef4444); color:white; }
+        .flash.warning { background:linear-gradient(90deg,#f59e0b,#f97316); color:white; }
+
+        footer.site-foot {
+            text-align:center; color:var(--muted); font-size:13px; margin:24px 0 60px 0;
+        }
+
+        /* responsive tweaks */
+        @media (min-width:900px){
+            .wrap{ grid-template-columns: 1fr 360px; }
+        }
+
+        @media (max-width:420px){
+            header.appbar{ padding:12px 10px; }
+            .logo{ width:42px; height:42px; font-size:16px }
+        }
+    </style>
+
+</head>
+<body>
+
+<header class="appbar">
+    <div class="brand">
+        <div class="logo">SV</div>
+        <div>
+            <h1>سامانه رأی‌گیری</h1>
+            <p>دبیرستان — استاد بهزاد</p>
+        </div>
+    </div>
+
+    <div class="nav-actions">
+        <a href="{{ url_for('home') }}">خانه</a>
+        <a href="{{ url_for('select_class') }}">کلاس‌ها</a>
+        <a href="{{ url_for('admin_panel') }}">مدیریت</a>
+    </div>
+</header>
+
+<div class="wrap">
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+              <div class="flash {{ 'success' if category=='success' else 'warning' if category=='warning' else 'error' }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <aside>
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <div style="font-weight:800; font-size:15px;">راهنما سریع</div>
+                    <div class="muted" style="margin-top:6px;">برای افزودن کاندید یا دانش‌آموز از پنل مدیریت استفاده کنید.</div>
+                </div>
+                <div style="text-align:center;">
+                    <div style="font-weight:800; font-size:22px; color:var(--accent);">مدیریت</div>
+                    <div class="muted" style="font-size:12px; margin-top:6px;">دسترسی کامل</div>
+                </div>
+            </div>
+
+            <div style="margin-top:14px;">
+                <a class="btn btn-primary" href="{{ url_for('admin_panel') }}">رفتن به مدیریت</a>
+            </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="card">
+            <div style="font-weight:800;">وضعیت کلی</div>
+            <div class="muted" style="margin-top:8px;">تعداد کل دانش‌آموزان و درصدی که رأی داده‌اند در پنل مدیریت نمایش داده می‌شود.</div>
+        </div>
+    </aside>
+</div>
+
+<footer class="site-foot">
+    © تمام حقوق برای دبیرستان محفوظ است — طراح مهراب
+</footer>
+
+</body>
+</html>

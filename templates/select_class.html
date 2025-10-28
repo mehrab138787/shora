@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}انتخاب کلاس — سامانه رأی‌گیری{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="h-main">انتخاب کلاس</div>
+    <div class="muted">کلاس مورد نظر را انتخاب کنید تا لیست دانش‌آموزان نمایش داده شود.</div>
+
+    <div style="margin-top:14px;" class="grid-cards">
+        {% for c in classes %}
+            <a href="{{ url_for('students_list', class_id=c[0]) }}" class="class-card">
+                <div class="class-code">کلاس {{ c[1] }}</div>
+                <div class="class-meta">مشاهده دانش‌آموزان و آغاز رأی‌گیری</div>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

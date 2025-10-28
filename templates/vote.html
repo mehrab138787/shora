@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}رأی دادن — {{ student[1] }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+            <div class="h-main">رأی دادن برای {{ student[1] }}</div>
+            <div class="muted">نام کاندیدها را ببینید و چند کاندید را انتخاب کنید — تنها یک بار ثبت می‌شود.</div>
+        </div>
+        <div>
+            <a class="btn btn-ghost" href="{{ url_for('students_list', class_id=class_id) }}">انصراف</a>
+        </div>
+    </div>
+
+    <form method="POST" style="margin-top:14px;">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+            {% if candidates %}
+                {% for c in candidates %}
+                    <label class="candidate" style="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border:1px solid #e0e0e0; border-radius:8px; cursor:pointer; transition:0.2s; background:#f9f9f9;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div style="width:44px;height:44px;border-radius:8px;background:linear-gradient(90deg,var(--accent),#0aa0e6);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px;">
+                                {{ loop.index }}
+                            </div>
+                            <div>
+                                <div style="font-weight:800;">{{ c[1] }}</div>
+                                <div class="muted" style="margin-top:2px;">کاندید شماره {{ loop.index }}</div>
+                            </div>
+                        </div>
+                        <div>
+                            <input type="checkbox" name="candidates" value="{{ c[0] }}">
+                        </div>
+                    </label>
+                {% endfor %}
+                <div style="margin-top:16px;">
+                    <button type="submit" class="btn btn-primary" style="width:100%;">ثبت رأی</button>
+                </div>
+            {% else %}
+                <div class="muted">هیچ کاندیدی تعریف نشده است. به پنل مدیریت مراجعه کنید.</div>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

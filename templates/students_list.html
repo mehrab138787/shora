@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}دانش‌آموزان کلاس {{ class_name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+            <div class="h-main">دانش‌آموزان — کلاس {{ class_name }}</div>
+            <div class="muted">روی هر نام کلیک کنید تا برای آن دانش‌آموز رأی ثبت شود.</div>
+        </div>
+        <div>
+            <a class="btn btn-primary" href="{{ url_for('add_student', class_id=class_id) }}">➕ افزودن دانش‌آموز</a>
+            <a class="btn btn-ghost" href="{{ url_for('select_class') }}">🔙 بازگشت به کلاس‌ها</a>
+        </div>
+    </div>
+
+    <!-- فرم جستجو -->
+    <form method="get" action="" style="margin-top:12px; display:flex; gap:6px;">
+        <input type="text" name="search" placeholder="جستجوی نام..." value="{{ search }}" style="flex:1; padding:6px;">
+        <button type="submit" class="btn btn-primary">جستجو</button>
+    </form>
+
+    <div style="margin-top:12px;" class="list">
+        {% if students %}
+            {% for s in students %}
+                <div class="row">
+                    <div>
+                        <div class="name">{{ s[1] }}</div>
+                        <div class="muted" style="margin-top:6px;">
+                            {% if s[2]==1 %}وضعیت: رأی داده{% else %}وضعیت: رأی نداده{% endif %}
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        {% if s[2]==1 %}
+                            <div style="font-weight:800; color:var(--muted)">✔</div>
+                        {% else %}
+                            <a class="btn btn-primary" href="{{ url_for('vote', class_id=class_id, student_id=s[0]) }}">رأی دادن</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="muted">هیچ دانش‌آموزی با این نام پیدا نشد.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

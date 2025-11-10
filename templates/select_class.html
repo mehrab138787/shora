@@ -3,10 +3,12 @@
 
 {% block content %}
 <div class="card">
-    <div class="h-main">انتخاب کلاس</div>
-    <div class="muted">کلاس مورد نظر را انتخاب کنید تا لیست دانش‌آموزان نمایش داده شود.</div>
+    <div class="hero-title">📚 انتخاب کلاس</div>
+    <div class="hero-subtitle" style="margin-top:6px;">
+        کلاس مورد نظر را انتخاب کنید تا لیست دانش‌آموزان نمایش داده شود.
+    </div>
 
-    <div style="margin-top:14px;" class="grid-cards">
+    <div class="grid-cards" style="margin-top:18px;">
         {% for c in classes %}
             <a href="{{ url_for('students_list', class_id=c[0]) }}" class="class-card">
                 <div class="class-code">کلاس {{ c[1] }}</div>
@@ -15,4 +17,54 @@
         {% endfor %}
     </div>
 </div>
+
+<style>
+/* گرید کارت‌ها */
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+}
+
+/* کارت کلاس */
+.class-card {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100px;
+}
+
+/* افکت hover */
+.class-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 14px 40px rgba(0,188,212,0.4);
+}
+
+/* متن داخل کارت */
+.class-code {
+    font-size: 18px;
+    font-weight: 700;
+}
+.class-meta {
+    font-size: 13px;
+    margin-top: 6px;
+    color: var(--muted);
+}
+
+/* واکنش‌گرا برای موبایل */
+@media (max-width: 480px) {
+    .grid-cards {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 {% endblock %}

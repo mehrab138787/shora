@@ -2,32 +2,211 @@
 {% block title %}خانه — سامانه رأی‌گیری{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div style="display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;">
-        <div>
-            <div class="h-main">سامانهٔ مدیریت انتخابات مدرسه</div>
-            <div class="muted" style="margin-top:6px;">
-                این سامانه به منظور ثبت، مدیریت و نظارت بر فرآیند رأی‌گیری دانش‌آموزان طراحی شده است.  
-                <br>
-                مدرسهٔ استاد بهزاد تحت مدیریت <strong>محمد قاسم زمانی</strong>
-            </div>
+<style>
+/* ===== جلوه حرفه‌ای با Glassmorphism و انیمیشن ===== */
 
-            <div style="margin-top:14px; font-style:italic; color:#555;">
-                رأی تو صدای توست، چراغیست روشن در تاریکی،  
-                هر انتخاب، گامیست برای فردایی بهتر،  
-                امروز تصمیم بگیر، فردا را بساز.
-            </div>
+body {
+  background: radial-gradient(circle at top right, #0d47a1, #002171 70%);
+  overflow-x: hidden;
+}
 
-            <div style="margin-top:14px;">
-                <a class="btn btn-primary" href="{{ url_for('select_class') }}">شروع رأی‌گیری</a>
-                <a class="btn btn-ghost" href="{{ url_for('admin_panel') }}">پنل مدیریت</a>
-            </div>
-        </div>
-        <div style="min-width:220px; text-align:left;">
-            <div style="background:linear-gradient(90deg,var(--accent),#0aa0e6); color:white; padding:12px; border-radius:10px; font-weight:800;">
-                مدرسهٔ استاد بهزاد
-            </div>
-        </div>
+.hero-container {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2.5rem;
+  padding: 3rem;
+  margin-top: 2rem;
+  border-radius: 25px;
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: fadeInUp 1.2s ease-in-out;
+  z-index: 1;
+}
+
+/* جلوه نور متحرک در پس‌زمینه */
+.hero-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 25px;
+  background: radial-gradient(circle at 30% 20%, rgba(0,255,255,0.3), transparent 70%),
+              radial-gradient(circle at 80% 60%, rgba(255,255,255,0.15), transparent 70%);
+  filter: blur(60px);
+  animation: glowMove 10s infinite alternate ease-in-out;
+  z-index: 0;
+}
+
+.hero-left, .hero-right {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-left {
+  flex: 1.2;
+  color: white;
+  min-width: 300px;
+  animation: slideIn 1.4s ease-in-out;
+}
+
+.hero-title {
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.7rem;
+  text-shadow: 0 3px 10px rgba(0,0,0,0.3);
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: #e0f7fa;
+  line-height: 1.8;
+  margin-bottom: 1.2rem;
+}
+
+.hero-quote {
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 4px solid #00e5ff;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  color: #f0faff;
+  font-style: italic;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  margin-bottom: 1.8rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hero-quote:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 6px 24px rgba(0,255,255,0.2);
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.hero-actions a {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.05rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #00bcd4, #0091ea);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
+}
+.btn-primary:hover {
+  background: linear-gradient(90deg, #26c6da, #00b0ff);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 188, 212, 0.6);
+}
+
+.btn-ghost {
+  border: 2px solid #00e5ff;
+  color: #00e5ff;
+}
+.btn-ghost:hover {
+  background: #00e5ff;
+  color: #002171;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 229, 255, 0.3);
+}
+
+.hero-right {
+  text-align: left;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  animation: slideInRight 1.6s ease-in-out;
+}
+
+.school-badge {
+  background: linear-gradient(90deg, #00bcd4, #2979ff);
+  color: white;
+  padding: 1.2rem 1.8rem;
+  border-radius: 16px;
+  font-weight: 800;
+  font-size: 1.2rem;
+  text-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 6px 30px rgba(0,0,0,0.2);
+  transform: rotate(-1.5deg);
+  animation: floatBadge 5s ease-in-out infinite;
+}
+
+/* ==== انیمیشن‌ها ==== */
+@keyframes glowMove {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes floatBadge {
+  0%, 100% { transform: rotate(-1.5deg) translateY(0); }
+  50% { transform: rotate(1.5deg) translateY(-8px); }
+}
+
+/* واکنش‌گرا */
+@media (max-width: 768px) {
+  .hero-container {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+  .hero-right {
+    align-items: center;
+  }
+}
+</style>
+
+<div class="hero-container">
+  <div class="hero-left">
+    <div class="hero-title">✨ سامانهٔ مدیریت انتخابات مدرسه</div>
+    <div class="hero-subtitle">
+      این سامانه برای ثبت، مدیریت و نظارت بر فرآیند رأی‌گیری دانش‌آموزان طراحی شده است.  
+      <br>
+      <strong>مدرسهٔ استاد بهزاد</strong> تحت مدیریت <strong>محمد قاسم زمانی</strong>.
     </div>
+
+    <div class="hero-quote">
+      «رأی تو صدای توست، چراغیست روشن در تاریکی؛  
+      هر انتخاب، گامیست برای فردایی بهتر.  
+      امروز تصمیم بگیر، فردا را بساز.»
+    </div>
+
+    <div class="hero-actions">
+      <a class="btn-primary" href="{{ url_for('select_class') }}">🚀 شروع رأی‌گیری</a>
+      <a class="btn-ghost" href="{{ url_for('admin_panel') }}">⚙️ پنل مدیریت</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="school-badge">
+      🏫 مدرسهٔ استاد بهزاد
+    </div>
+  </div>
 </div>
 {% endblock %}

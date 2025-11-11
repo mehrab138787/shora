@@ -1,12 +1,12 @@
-{% extends "base.html" %}
+پ{% extends "base.html" %}
 {% block title %}نتایج رأی‌گیری{% endblock %}
 
 {% block content %}
-<div class="card print-card" style="max-width:800px; margin:30px auto; padding:30px;">
-    <div class="hero-title" style="text-align:center; margin-bottom:20px;">📊 نتایج رأی‌گیری</div>
+<div class="results-card">
+    <h1 class="results-title">📊 نتایج نهایی رأی‌گیری</h1>
 
     {% if results %}
-    <div style="overflow-x:auto;">
+    <div class="table-wrapper">
         <table class="results-table">
             <thead>
                 <tr>
@@ -25,122 +25,134 @@
         </table>
     </div>
 
-    <div style="text-align:center; margin-top:30px;">
-        <button onclick="window.print();" class="btn btn-primary btn-print">🖨️ چاپ نتایج</button>
+    <div class="actions">
+        <button onclick="window.print();" class="btn-print">🖨️ چاپ نتایج</button>
     </div>
-
     {% else %}
-    <p class="muted" style="text-align:center; margin-top:20px;">هنوز رأیی ثبت نشده است.</p>
+    <p class="no-vote">هنوز رأیی ثبت نشده است.</p>
     {% endif %}
 </div>
 
 <style>
-/* کارت اصلی */
-.card {
-    border-radius: 20px;
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(20px);
-    border:1px solid rgba(255,255,255,0.2);
-    box-shadow: 0 12px 50px rgba(0,0,0,0.25);
-    transition: all 0.3s ease;
+/* کارت نتایج */
+.results-card {
+    max-width: 850px;
+    margin: 40px auto;
+    padding: 40px 30px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 24px;
+    backdrop-filter: blur(25px);
+    box-shadow:
+        inset 2px 2px 12px rgba(255,255,255,0.2),
+        inset -2px -2px 8px rgba(0,0,0,0.4),
+        0 12px 40px rgba(0,0,0,0.35);
     color: #fff;
+    text-align: center;
 }
 
-/* کارت مخصوص چاپ */
-.print-card {
-    background: #fdfdfd;
-    border: 2px solid #000;
-    box-shadow: none;
-    color: #000;
+/* عنوان */
+.results-title {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+    background: linear-gradient(90deg, #00bcd4, #26c6da);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
 /* جدول */
+.table-wrapper {
+    overflow-x:auto;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+}
+
 .results-table {
     width:100%;
     border-collapse: collapse;
     font-family: Vazirmatn, sans-serif;
-    color: inherit;
 }
 
 .results-table th, .results-table td {
-    padding:14px 12px;
-    border: 2px solid #000;
-    font-size:16px;
-    text-align:center;
+    padding: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    font-size: 16px;
+    text-align: center;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 
-.results-table thead {
-    background-color: #0aa0e6;
-    color: #fff;
-    font-weight:700;
+.results-table thead tr {
+    background: linear-gradient(90deg, #00bcd4, #26c6da);
+    font-size: 18px;
+    font-weight: 700;
 }
 
 .results-table tbody tr {
-    background: rgba(255,255,255,0.1);
-    transition: background 0.2s;
+    background: rgba(255,255,255,0.05);
+    transition: all 0.25s ease;
+    cursor: default;
 }
 
 .results-table tbody tr:hover {
-    background: rgba(10,160,230,0.8); /* hover پررنگ و واضح */
-    color: #fff; /* متن روی hover سفید و کاملاً مشخص */
+    background: rgba(38,198,218,0.25);
+    transform: scale(1.01);
 }
 
 /* دکمه چاپ */
 .btn-print {
-    background: linear-gradient(90deg, #0aa0e6, #26c6da);
-    color: #fff;
+    margin-top: 35px;
+    background: linear-gradient(90deg, #00bcd4, #26c6da);
     border-radius: 14px;
-    padding:12px 30px;
+    padding:12px 36px;
     font-weight:700;
     font-size:16px;
+    color:#fff;
+    border:none;
     cursor:pointer;
-    transition: all 0.2s;
+    box-shadow: 0 8px 30px rgba(0,188,212,0.4);
 }
 .btn-print:hover {
-    background: linear-gradient(90deg,#26c6da,#00b0ff);
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(10,160,230,0.3);
+    box-shadow: 0 12px 40px rgba(38,198,218,0.5);
 }
 
-/* واکنش‌گرا */
-@media(max-width:600px){
-    .card { padding:20px; }
-    .results-table th, .results-table td { padding:10px; font-size:14px; }
-    .btn-print { width:100%; padding:12px 0; }
+/* بدون رأی */
+.no-vote {
+    font-size: 16px;
+    color: #ccc;
+    padding: 30px 0;
 }
 
-/* استایل چاپ حرفه‌ای */
+/* چاپ فقط جدول، بقیه مخفی */
 @media print {
-    body {
+    body * { visibility: hidden; }
+    .results-card, .results-card * { visibility: visible; }
+    .results-card {
+        position: absolute;
+        left: 0; top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 20px;
         background: #fff !important;
         color: #000 !important;
-    }
-    .card {
-        background: #fff !important;
-        border: 2px solid #000 !important;
         box-shadow: none !important;
-        backdrop-filter: none !important;
-        padding:20px !important;
-    }
-    .results-table {
-        border: 2px solid #000 !important;
+        border: 2px solid #000;
     }
     .results-table th, .results-table td {
         border: 2px solid #000 !important;
         color: #000 !important;
         font-size:16px !important;
+        text-shadow: none !important;
     }
-    .results-table thead {
+    .results-table thead tr {
         background: #000 !important;
         color: #fff !important;
     }
-    .results-table tbody tr:hover {
-        background: #ddd !important;
-        color: #000 !important;
-    }
-    .btn-print {
-        display: none !important;
-    }
+    .btn-print { display:none !important; }
 }
 </style>
 {% endblock %}

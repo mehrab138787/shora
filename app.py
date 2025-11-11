@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash 
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import sqlite3
 import os
 
@@ -155,22 +155,32 @@ def init_db():
     conn.commit()
     conn.close()
 
+# 🟢 --- سیستم انتخاب تم --- 🟢
+@app.route("/set_theme/<mode>")
+def set_theme(mode):
+    if mode in ["glass", "fast"]:
+        session["theme"] = mode
+    return redirect(request.referrer or url_for("home"))
+
 # روت‌ها
 @app.route("/")
 def home():
-    return render_template("home.html")
+    theme = session.get("theme", "glass")
+    return render_template("home.html", theme=theme)
 
 @app.route("/classes")
 def select_class():
+    theme = session.get("theme", "glass")
     conn = connect_db()
     cur = conn.cursor()
     cur.execute("SELECT id, name FROM classes ORDER BY name")
     classes = cur.fetchall()
     conn.close()
-    return render_template("select_class.html", classes=classes)
+    return render_template("select_class.html", classes=classes, theme=theme)
 
 @app.route("/class/<int:class_id>")
 def students_list(class_id):
+    theme = session.get("theme", "glass")
     search = request.args.get("search", "").strip()
     conn = connect_db()
     cur = conn.cursor()
@@ -191,10 +201,12 @@ def students_list(class_id):
                            students=students,
                            class_id=class_id,
                            class_name=class_name,
-                           search=search)
+                           search=search,
+                           theme=theme)
 
 @app.route("/vote/<int:class_id>/<int:student_id>", methods=["GET","POST"])
 def vote(class_id, student_id):
+    theme = session.get("theme", "glass")
     conn = connect_db()
     cur = conn.cursor()
     cur.execute("SELECT id, name, voted FROM students WHERE id=? AND class_id=?", (student_id, class_id))
@@ -215,7 +227,7 @@ def vote(class_id, student_id):
             cur.execute("SELECT id, name FROM candidates ORDER BY name")
             candidates = cur.fetchall()
             conn.close()
-            return render_template("vote.html", student=student, candidates=candidates, class_id=class_id)
+            return render_template("vote.html", student=student, candidates=candidates, class_id=class_id, theme=theme)
         
         for cid in candidate_ids:
             cur.execute("INSERT INTO votes(student_id, candidate_id) VALUES(?,?)", (student_id, cid))
@@ -229,10 +241,11 @@ def vote(class_id, student_id):
     cur.execute("SELECT id, name FROM candidates ORDER BY name")
     candidates = cur.fetchall()
     conn.close()
-    return render_template("vote.html", student=student, candidates=candidates, class_id=class_id)
+    return render_template("vote.html", student=student, candidates=candidates, class_id=class_id, theme=theme)
 
 @app.route("/admin")
 def admin_panel():
+    theme = session.get("theme", "glass")
     conn = connect_db()
     cur = conn.cursor()
     cur.execute("SELECT id, name FROM candidates ORDER BY name")
@@ -251,10 +264,11 @@ def admin_panel():
     voted_students = cur.fetchone()[0]
     conn.close()
     return render_template("admin_panel.html", candidates=candidates, results=results,
-                           total_students=total_students, voted_students=voted_students)
+                           total_students=total_students, voted_students=voted_students, theme=theme)
 
 @app.route("/admin/print_results")
 def print_results():
+    theme = session.get("theme", "glass")
     conn = connect_db()
     cur = conn.cursor()
     cur.execute("""
@@ -266,10 +280,11 @@ def print_results():
     """)
     results = cur.fetchall()
     conn.close()
-    return render_template("print_results.html", results=results)
+    return render_template("print_results.html", results=results, theme=theme)
 
 @app.route("/admin/add_candidate", methods=["GET","POST"])
 def add_candidate():
+    theme = session.get("theme", "glass")
     if request.method == "POST":
         name = request.form.get("name", "").strip()
         if not name:
@@ -285,7 +300,7 @@ def add_candidate():
             flash("کاندیدی با این نام وجود دارد.", "warning")
         conn.close()
         return redirect(url_for("admin_panel"))
-    return render_template("add_candidate.html")
+    return render_template("add_candidate.html", theme=theme)
 
 @app.route("/admin/delete_candidate/<int:candidate_id>", methods=["POST"])
 def delete_candidate(candidate_id):
@@ -302,6 +317,7 @@ def delete_candidate(candidate_id):
 
 @app.route("/admin/add_student/<int:class_id>", methods=["GET","POST"])
 def add_student(class_id):
+    theme = session.get("theme", "glass")
     if request.method == "POST":
         name = request.form.get("name", "").strip()
         if not name:
@@ -317,7 +333,7 @@ def add_student(class_id):
             flash("این دانش‌آموز قبلاً در این کلاس ثبت شده است.", "warning")
         conn.close()
         return redirect(url_for("students_list", class_id=class_id))
-    return render_template("add_student.html", class_id=class_id)
+    return render_template("add_student.html", class_id=class_id, theme=theme)
 
 @app.route("/admin/reset_votes", methods=["POST"])
 def reset_votes():
@@ -333,4 +349,3 @@ def reset_votes():
 if __name__ == "__main__":
     init_db()
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
-

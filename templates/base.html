@@ -6,7 +6,6 @@
     <title>{% block title %}سامانه رأی‌گیری{% endblock %}</title>
 
     <style>
-        /* ===== فونت و تنظیمات پایه ===== */
         @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v34.1.0/dist/font-face.css');
 
         :root {
@@ -16,36 +15,68 @@
             --accent: #00bcd4;
             --accent-hover: #26c6da;
             --white: #ffffff;
-            --muted: rgba(255,255,255,0.7);
-            --shadow-light: rgba(255,255,255,0.1);
+            --muted: rgba(255,255,255,0.8);
         }
 
-        * { box-sizing: border-box; margin:0; padding:0; }
-        body {
-            font-family: Vazirmatn, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        * { box-sizing: border-box; margin:0; padding:0; font-family: Vazirmatn, system-ui, -apple-system, "Segoe UI", Roboto, Arial; }
+
+        /* ========== حالت شیشه‌ای ========== */
+        body.theme-glass {
             background: radial-gradient(circle at top right, var(--bg-start), var(--bg-end) 70%);
             color: var(--white);
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            overflow-x: hidden;
             min-height: 100vh;
+        }
+
+        body.theme-glass .card {
+            background: var(--card-glass);
+            backdrop-filter: blur(18px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: all 0.4s ease;
+        }
+
+        body.theme-glass header.appbar {
+            background: var(--card-glass);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+        }
+
+        /* ========== حالت سریع ========== */
+        body.theme-fast {
+            background: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        body.theme-fast header.appbar {
+            background: #111;
+            box-shadow: none;
+        }
+
+        body.theme-fast .card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            box-shadow: none;
+            backdrop-filter: none;
+        }
+
+        body.theme-fast * {
+            animation: none !important;
+            transition: none !important;
         }
 
         /* ===== هدر ===== */
         header.appbar {
             width: 100%;
-            background: var(--card-glass);
-            backdrop-filter: blur(15px);
-            padding: 16px 24px;
+            padding: 12px 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 30;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-            animation: fadeInDown 1s ease forwards;
+            z-index: 10;
         }
 
         .brand {
@@ -54,26 +85,14 @@
             align-items: center;
         }
 
-        /* قاب لوگو، حالا با پرچم ایران */
         .logo {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--accent), #2979ff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 25px rgba(0,188,212,0.3);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--accent);
             overflow: hidden;
         }
-
-        /* پرچم داخل لوگو */
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 12px;
-        }
+        .logo img { width: 100%; height: 100%; object-fit: cover; }
 
         .brand h1 { font-size: 18px; margin: 0; }
         .brand p { font-size: 13px; color: var(--muted); margin: 0; }
@@ -82,116 +101,86 @@
             text-decoration: none;
             color: var(--white);
             background: linear-gradient(90deg, var(--accent), #0091ea);
-            padding: 10px 14px;
-            border-radius: 12px;
+            padding: 8px 12px;
+            border-radius: 8px;
             font-weight: 600;
-            box-shadow: 0 6px 20px rgba(0,188,212,0.3);
-            transition: all 0.3s ease;
+            font-size: 14px;
             margin-left: 8px;
         }
-        .nav-actions a:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0,188,212,0.5);
+
+        /* ===== دکمه تغییر تم ===== */
+        .theme-switch a {
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(90deg, var(--accent), #0091ea);
+            padding: 7px 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
         }
 
-        /* ===== کانتینر اصلی ===== */
         .wrap {
-            width: 95%;
-            max-width: 1150px;
-            margin: 28px auto;
+            width: 96%;
+            max-width: 1000px;
+            margin: 24px auto;
             display: grid;
             grid-template-columns: 1fr;
-            gap: 24px;
-        }
-
-        main, aside {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
         .card {
-            background: var(--card-glass);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.25);
-            border: 1px solid rgba(255,255,255,0.2);
-            animation: fadeInUp 1s ease forwards;
+            border-radius: 10px;
+            padding: 16px;
         }
 
-        .h-main { font-size: 20px; margin-bottom: 10px; font-weight: 700; }
+        .h-main { font-size: 18px; margin-bottom: 6px; font-weight: 700; }
         .muted { color: var(--muted); font-size: 13px; }
 
         .btn {
             display: inline-block;
-            padding: 10px 16px;
-            border-radius: 12px;
+            padding: 8px 12px;
+            border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
             border: none;
             text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        .btn-primary {
+            color: var(--white);
             background: linear-gradient(90deg, var(--accent), #0091ea);
-            color: var(--white);
-            box-shadow: 0 8px 25px rgba(0,188,212,0.3);
-        }
-        .btn-primary:hover {
-            background: linear-gradient(90deg, var(--accent-hover), #00b0ff);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 35px rgba(0,188,212,0.5);
-        }
-
-        .btn-ghost {
-            background: transparent;
-            border: 2px solid var(--accent);
-            color: var(--accent);
-        }
-        .btn-ghost:hover {
-            background: var(--accent);
-            color: var(--white);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,188,212,0.3);
+            margin-top: 10px;
         }
 
         .flash {
-            padding: 12px 16px;
-            border-radius: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             color: var(--white);
+            font-size: 14px;
         }
-        .flash.success { background: linear-gradient(90deg,#1dd1a1,#10b981); }
-        .flash.error { background: linear-gradient(90deg,#f97373,#ef4444); }
-        .flash.warning { background: linear-gradient(90deg,#f59e0b,#f97316); }
+        .flash.success { background: #16a34a; }
+        .flash.error { background: #dc2626; }
+        .flash.warning { background: #d97706; }
 
         footer.site-foot {
             text-align: center;
             color: var(--muted);
             font-size: 13px;
-            margin: 40px 0 60px 0;
+            margin: 30px 0 40px 0;
         }
 
-        @keyframes fadeInUp { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform: translateY(0); } }
-        @keyframes fadeInDown { from { opacity:0; transform: translateY(-30px); } to { opacity:1; transform: translateY(0); } }
-
-        @media (min-width:900px){
-            .wrap{ grid-template-columns: 1fr 360px; }
-        }
-        @media (max-width:420px){
-            header.appbar { padding:12px 10px; }
-            .logo { width:42px; height:42px; }
+        @media (min-width: 900px) {
+            .wrap { grid-template-columns: 1fr 320px; }
         }
 
+        @media (max-width: 768px) {
+            .nav-actions a, .theme-switch a { font-size: 13px; padding: 7px 9px; }
+        }
     </style>
 </head>
-<body>
+<body class="{{ 'theme-glass' if theme == 'glass' else 'theme-fast' }}">
 
 <header class="appbar">
     <div class="brand">
-        <!-- پرچم ایران جای لوگو -->
         <div class="logo">
             <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Flag_of_Iran.svg" alt="Iran Flag">
         </div>
@@ -201,10 +190,20 @@
         </div>
     </div>
 
-    <div class="nav-actions">
-        <a href="{{ url_for('home') }}">خانه</a>
-        <a href="{{ url_for('select_class') }}">کلاس‌ها</a>
-        <a href="{{ url_for('admin_panel') }}">مدیریت</a>
+    <div style="display:flex; align-items:center; gap:10px;">
+        <div class="nav-actions">
+            <a href="{{ url_for('home') }}">خانه</a>
+            <a href="{{ url_for('select_class') }}">کلاس‌ها</a>
+            <a href="{{ url_for('admin_panel') }}">مدیریت</a>
+        </div>
+
+        <div class="theme-switch">
+            {% if theme == 'glass' %}
+                <a href="{{ url_for('set_theme', mode='fast') }}">💨 حالت سریع</a>
+            {% else %}
+                <a href="{{ url_for('set_theme', mode='glass') }}">✨ حالت شیشه‌ای</a>
+            {% endif %}
+        </div>
     </div>
 </header>
 
@@ -228,26 +227,22 @@
                     <div class="muted" style="margin-top:6px;">برای افزودن کاندید یا دانش‌آموز از پنل مدیریت استفاده کنید.</div>
                 </div>
                 <div style="text-align:center;">
-                    <div style="font-weight:800; font-size:22px; color:var(--accent);">مدیریت</div>
-                    <div class="muted" style="font-size:12px; margin-top:6px;">دسترسی کامل</div>
+                    <div style="font-weight:800; font-size:18px; color:var(--accent);">مدیریت</div>
+                    <div class="muted" style="font-size:12px; margin-top:4px;">دسترسی کامل</div>
                 </div>
             </div>
-            <div style="margin-top:14px;">
-                <a class="btn btn-primary" href="{{ url_for('admin_panel') }}">رفتن به مدیریت</a>
-            </div>
+            <a class="btn" href="{{ url_for('admin_panel') }}">رفتن به مدیریت</a>
         </div>
-
-        <div style="height:14px"></div>
 
         <div class="card">
             <div class="h-main">وضعیت کلی</div>
-            <div class="muted" style="margin-top:8px;">تعداد کل دانش‌آموزان و درصدی که رأی داده‌اند در پنل مدیریت نمایش داده می‌شود.</div>
+            <div class="muted">تعداد کل دانش‌آموزان و درصد رأی‌دهندگان در پنل مدیریت نمایش داده می‌شود.</div>
         </div>
     </aside>
 </div>
 
 <footer class="site-foot">
-    © تمام حقوق برای دبیرستان محفوظ است — طراح مهراب
+    © تمام حقوق برای دبیرستان محفوظ است — طراحی: مهراب
 </footer>
 
 </body>

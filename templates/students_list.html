@@ -3,45 +3,85 @@
 
 {% block content %}
 <div class="card">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-        <div>
-            <div class="h-main">دانش‌آموزان — کلاس {{ class_name }}</div>
-            <div class="muted">روی هر نام کلیک کنید تا برای آن دانش‌آموز رأی ثبت شود.</div>
-        </div>
-        <div>
-            <a class="btn btn-primary" href="{{ url_for('add_student', class_id=class_id) }}">➕ افزودن دانش‌آموز</a>
-            <a class="btn btn-ghost" href="{{ url_for('select_class') }}">🔙 بازگشت به کلاس‌ها</a>
-        </div>
-    </div>
 
-    <!-- فرم جستجو -->
-    <form method="get" action="" style="margin-top:12px; display:flex; gap:6px;">
-        <input type="text" name="search" placeholder="جستجوی نام..." value="{{ search }}" style="flex:1; padding:6px;">
-        <button type="submit" class="btn btn-primary">جستجو</button>
+    <!-- 🔹 هدر کارت -->
+    <header class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+            <h2 class="h-main">دانش‌آموزان — کلاس {{ class_name }}</h2>
+            <p class="muted">روی نام هر دانش‌آموز کلیک کنید تا رأی ثبت شود.</p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <a href="{{ url_for('add_student', class_id=class_id) }}" class="btn">➕ افزودن دانش‌آموز</a>
+            <a href="{{ url_for('select_class') }}" class="btn" style="background:#09408f;">🔙 بازگشت</a>
+        </div>
+    </header>
+
+    <!-- 🔹 فرم جستجو -->
+    <form method="get" action="" style="margin-top:16px; display:flex; gap:8px; flex-wrap:wrap;">
+        <input
+            type="text"
+            name="search"
+            value="{{ search }}"
+            placeholder="🔍 جستجوی نام دانش‌آموز..."
+            style="
+                flex:1;
+                padding:10px 12px;
+                border:none;
+                border-radius:8px;
+                font-size:14px;
+                outline:none;
+                background:#0b3a82;
+                color:white;
+            "
+        >
+        <button type="submit" class="btn">جستجو</button>
     </form>
 
-    <div style="margin-top:12px;" class="list">
+    <!-- 🔹 لیست دانش‌آموزان -->
+    <div style="margin-top:20px;">
         {% if students %}
             {% for s in students %}
-                <div class="row">
+                <div
+                    class="student-row"
+                    style="
+                        display:flex;
+                        justify-content:space-between;
+                        align-items:center;
+                        padding:12px 8px;
+                        border-bottom:1px solid rgba(255,255,255,0.1);
+                        transition:background 0.2s;
+                    "
+                    onmouseover="this.style.background='rgba(255,255,255,0.05)'"
+                    onmouseout="this.style.background='transparent'"
+                >
                     <div>
-                        <div class="name">{{ s[1] }}</div>
-                        <div class="muted" style="margin-top:6px;">
-                            {% if s[2]==1 %}وضعیت: رأی داده{% else %}وضعیت: رأی نداده{% endif %}
+                        <div style="font-weight:600; font-size:15px;">{{ s[1] }}</div>
+                        <div class="muted" style="margin-top:4px; font-size:13px;">
+                            {% if s[2] == 1 %}
+                                ✅ وضعیت: رأی داده
+                            {% else %}
+                                ⏳ وضعیت: رأی نداده
+                            {% endif %}
                         </div>
                     </div>
-                    <div style="display:flex; gap:8px; align-items:center;">
-                        {% if s[2]==1 %}
-                            <div style="font-weight:800; color:var(--muted)">✔</div>
+
+                    <div>
+                        {% if s[2] == 1 %}
+                            <span style="color:var(--muted); font-weight:700;">✔ ثبت‌شده</span>
                         {% else %}
-                            <a class="btn btn-primary" href="{{ url_for('vote', class_id=class_id, student_id=s[0]) }}">رأی دادن</a>
+                            <a
+                                href="{{ url_for('vote', class_id=class_id, student_id=s[0]) }}"
+                                class="btn"
+                                style="background:var(--accent);"
+                            >🗳️ رأی دادن</a>
                         {% endif %}
                     </div>
                 </div>
             {% endfor %}
         {% else %}
-            <div class="muted">هیچ دانش‌آموزی با این نام پیدا نشد.</div>
+            <p class="muted" style="text-align:center; padding:16px;">هیچ دانش‌آموزی پیدا نشد.</p>
         {% endif %}
     </div>
+
 </div>
 {% endblock %}

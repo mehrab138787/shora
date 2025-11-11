@@ -3,15 +3,12 @@
 
 {% block content %}
 <style>
-/* ===== جلوه حرفه‌ای با Glassmorphism و انیمیشن ===== */
-
 body {
   background: radial-gradient(circle at top right, #0d47a1, #002171 70%);
   overflow-x: hidden;
 }
 
 .hero-container {
-  position: relative;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -24,33 +21,16 @@ body {
   background: rgba(255, 255, 255, 0.15);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  animation: fadeInUp 1.2s ease-in-out;
-  z-index: 1;
-}
-
-/* جلوه نور متحرک در پس‌زمینه */
-.hero-container::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 25px;
-  background: radial-gradient(circle at 30% 20%, rgba(0,255,255,0.3), transparent 70%),
-              radial-gradient(circle at 80% 60%, rgba(255,255,255,0.15), transparent 70%);
-  filter: blur(60px);
-  animation: glowMove 10s infinite alternate ease-in-out;
-  z-index: 0;
 }
 
 .hero-left, .hero-right {
   position: relative;
-  z-index: 2;
 }
 
 .hero-left {
   flex: 1.2;
   color: white;
   min-width: 300px;
-  animation: slideIn 1.4s ease-in-out;
 }
 
 .hero-title {
@@ -77,11 +57,6 @@ body {
   font-style: italic;
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
   margin-bottom: 1.8rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.hero-quote:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 6px 24px rgba(0,255,255,0.2);
 }
 
 .hero-actions {
@@ -127,46 +102,30 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  animation: slideInRight 1.6s ease-in-out;
+  gap: 1rem;
 }
 
-.school-badge {
-  background: linear-gradient(90deg, #00bcd4, #2979ff);
-  color: white;
-  padding: 1.2rem 1.8rem;
+.school-badge, .slogan-badge, .election-badge {
   border-radius: 16px;
   font-weight: 800;
-  font-size: 1.2rem;
   text-shadow: 0 3px 6px rgba(0,0,0,0.2);
   box-shadow: 0 6px 30px rgba(0,0,0,0.2);
-  transform: rotate(-1.5deg);
-  animation: floatBadge 5s ease-in-out infinite;
+  padding: 1.2rem 1.8rem;
+  color: #fff;
+  text-align: center;
 }
 
-/* ==== انیمیشن‌ها ==== */
-@keyframes glowMove {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
+/* رنگ‌ها و طراحی آبی */
+.school-badge {
+  background: linear-gradient(90deg, #00bcd4, #2979ff);
 }
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+.slogan-badge {
+  background: linear-gradient(90deg, #0091ea, #00b0ff);
+  font-size: 1rem;
 }
-
-@keyframes slideIn {
-  from { opacity: 0; transform: translateX(-40px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(40px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes floatBadge {
-  0%, 100% { transform: rotate(-1.5deg) translateY(0); }
-  50% { transform: rotate(1.5deg) translateY(-8px); }
+.election-badge {
+  background: linear-gradient(90deg, #0d47a1, #1976d2);
+  font-size: 1rem;
 }
 
 /* واکنش‌گرا */
@@ -204,9 +163,9 @@ body {
   </div>
 
   <div class="hero-right">
-    <div class="school-badge">
-      🏫 مدرسهٔ استاد بهزاد
-    </div>
+    <div class="school-badge">🏫 مدرسهٔ استاد بهزاد</div>
+    <div class="slogan-badge">🏅 شورای دانش‌آموزی، پرچم‌دار حل مسئله، برای ایران مقتدر</div>
+    <div class="election-badge">🗳️ بیست و هشتمین دوره انتخابات شورای دانش‌آموزی</div>
   </div>
 </div>
 {% endblock %}
